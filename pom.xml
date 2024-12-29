@@ -5,12 +5,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.atomiteam</groupId>
-    <artifactId>restful-api-gateway</artifactId>
+    <artifactId>aws-java-lambda-router</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>
 
-    <name>RESTful API Gateway</name>
-    <description>A Java-based RESTful API gateway for AWS Lambda.</description>
+    <name>aws-java-lambda-router</name>
+    <description>A Java-based API gateway Router for AWS Lambdas.</description>
     <url>https://github.com/atomiteam/restful-api-gateway</url>
     <licenses>
         <license>
