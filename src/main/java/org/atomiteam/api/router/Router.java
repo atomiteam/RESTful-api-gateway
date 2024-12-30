@@ -1,6 +1,5 @@
 package org.atomiteam.api.router;
 
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -8,16 +7,33 @@ import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent;
 
+/**
+ * Routes incoming HTTP requests to registered handlers based on HTTP method and path.
+ */
 public class Router {
 
     private Map<String, Map<String, RouteHandler>> routes = new HashMap<>();
 
-    // Register handler for a given method and path
+    /**
+     * Registers a handler for a specific HTTP method and path.
+     *
+     * @param method  the HTTP method (e.g., "GET", "POST").
+     * @param path    the request path.
+     * @param handler the RouteHandler to handle requests for the method and path.
+     */
     public void register(String method, String path, RouteHandler handler) {
         routes.computeIfAbsent(method, k -> new HashMap<>()).put(path, handler);
     }
 
-    // Route the request to the appropriate handler
+    /**
+     * Routes an incoming HTTP request to the appropriate handler.
+     *
+     * @param method  the HTTP method of the request.
+     * @param path    the request path.
+     * @param input   the API Gateway request event.
+     * @param context the AWS Lambda context.
+     * @return the API Gateway response event.
+     */
     public APIGatewayProxyResponseEvent route(String method, String path, APIGatewayProxyRequestEvent input,
             Context context) {
         try {
@@ -40,7 +56,6 @@ public class Router {
             return response;
         } catch (Exception e) {
             new Logger(context).log("General error %s %s", e.getMessage(), e.getStackTrace());
-            context.getLogger().log("Error " + e.getMessage() + "" + e.getStackTrace());
             APIGatewayProxyResponseEvent apiResponse = new APIGatewayProxyResponseEvent();
             apiResponse.setStatusCode(503);
             apiResponse.setBody(e.getMessage());
