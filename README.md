@@ -1,3 +1,4 @@
+
 # API Router for AWS Lambda
 
 This project provides a routing mechanism for AWS Lambda functions that are triggered by API Gateway, allowing the creation of RESTful APIs using Java. It features a modular and flexible design with components for request handling, query string parsing, header management, and routing.
@@ -42,9 +43,72 @@ This project provides a routing mechanism for AWS Lambda functions that are trig
 
 ### Registering Routes
 
-To register routes, use the `Router` class:
+Below is an updated and improved example inspired by real-world implementations:
 
 ```java
-router.register("GET", "/example", (input, context) -> {
-    return new Response(200, Map.of("message", "Hello, World!"));
-});
+import org.example.router.LambdaHandler;
+import org.example.handlers.PageHandler;
+import org.example.handlers.ApiHandler;
+import org.example.storage.DataStore;
+import org.example.templates.MessageResolver;
+import org.example.templates.ResourceResolver;
+
+public class CustomLambdaHandler extends LambdaHandler {
+
+    public CustomLambdaHandler(DataStore dataStore) {
+        super(dataStore);
+    }
+
+    public CustomLambdaHandler() {
+        super();
+    }
+
+    @Override
+    protected void initRoutes() {
+        router.register("GET", "/home", new PageHandler(dataStore, new ResourceResolver()));
+        router.register("POST", "/api/data", new ApiHandler(dataStore, new MessageResolver()));
+    }
+}
+```
+
+### Example Endpoint Logic
+
+#### `/home` Endpoint
+```java
+public class PageHandler implements RouteHandler {
+    private final DataStore dataStore;
+    private final ResourceResolver resourceResolver;
+
+    public PageHandler(DataStore dataStore, ResourceResolver resourceResolver) {
+        this.dataStore = dataStore;
+        this.resourceResolver = resourceResolver;
+    }
+
+    @Override
+    public Response handleRequest(Request input, Context context) {
+        return new Response(200, "<html>Welcome to our homepage</html>")
+                .contentType("text/html");
+    }
+}
+```
+
+#### `/api/data` Endpoint
+```java
+public class ApiHandler implements RouteHandler {
+    private final DataStore dataStore;
+    private final MessageResolver messageResolver;
+
+    public ApiHandler(DataStore dataStore, MessageResolver messageResolver) {
+        this.dataStore = dataStore;
+        this.messageResolver = messageResolver;
+    }
+
+    @Override
+    public Response handleRequest(Request input, Context context) {
+        // Logic to process and return data
+        return new Response(200, Map.of("message", "Data processed successfully"));
+    }
+}
+```
+
+This example demonstrates how to structure route registrations and handler implementations effectively.
