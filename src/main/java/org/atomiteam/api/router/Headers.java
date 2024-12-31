@@ -4,7 +4,8 @@ import java.util.Locale;
 import java.util.Map;
 
 /**
- * Represents HTTP headers and provides utility methods to extract information, such as locale.
+ * Represents HTTP headers and provides utility methods to extract information, such as locale
+ * and request type.
  */
 public class Headers {
     final Map<String, String> headers;
@@ -35,5 +36,38 @@ public class Headers {
         }
 
         return Locale.getDefault();
+    }
+
+    /**
+     * Retrieves the value of a specific HTTP header.
+     *
+     * @param headerName the name of the HTTP header to retrieve.
+     * @return the value of the HTTP header, or null if the header is not present.
+     */
+    public String getHeader(String headerName) {
+        return headers.get(headerName);
+    }
+
+    /**
+     * Determines whether the current request is a page request or an AJAX request.
+     *
+     * An AJAX request typically includes the "X-Requested-With" header with the value "XMLHttpRequest".
+     *
+     * @return true if the request is an AJAX request; false otherwise.
+     */
+    public boolean isAjaxRequest() {
+        String requestedWith = headers.get("X-Requested-With");
+        return "XMLHttpRequest".equalsIgnoreCase(requestedWith);
+    }
+
+    /**
+     * Determines whether the current request is a standard page HTTP request.
+     *
+     * A page request is assumed if it is not an AJAX request.
+     *
+     * @return true if the request is a page request; false otherwise.
+     */
+    public boolean isPageRequest() {
+        return !isAjaxRequest();
     }
 }
